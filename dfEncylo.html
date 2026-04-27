@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE PIECE • Devil Fruit Encyclopedia v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+        
+        :root {
+            --onepiece-red: #c8102e;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', Georgia, serif;
+            letter-spacing: -1.5px;
+        }
+
+        .devil-fruit-card {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .devil-fruit-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4), 
+                       0 10px 10px -6px rgb(0 0 0 / 0.3);
+        }
+
+        .devil-fruit-card:active {
+            transform: scale(0.985);
+        }
+
+        .fruit-visual {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swirl-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18) 1px, transparent 1px),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.12) 1px, transparent 1px);
+            background-size: 14px 14px;
+            pointer-events: none;
+            transition: transform 0.6s ease;
+        }
+
+        .devil-fruit-card:hover .swirl-pattern {
+            transform: rotate(8deg) scale(1.15);
+        }
+
+        .type-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+        }
+
+        .section-header {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(to right, #c8102e, transparent);
+        }
+
+        .filter-active {
+            background-color: #c8102e;
+            color: white;
+            border-color: #c8102e;
+            box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.3);
+        }
+
+        .modal {
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .fruit-grid {
+            scrollbar-width: thin;
+            scrollbar-color: #4b5563 #1f2937;
+        }
+
+        .nav-active {
+            color: #c8102e;
+            border-bottom: 2px solid #c8102e;
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pedicel-diagram {
+            width: 100%;
+            height: 120px;
+            background: #111827;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #374151;
+        }
+
+        .mini-swirl {
+            animation: swirl-rotate 8s linear infinite;
+        }
+
+        .fruit-card-visual {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .devil-fruit-card:hover .fruit-card-visual {
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        .collection-heart {
+            transition: all 0.2s ease;
+        }
+
+        .collection-heart:hover {
+            transform: scale(1.3);
+            color: #ef4444;
+        }
+
+        .comparison-bar {
+            height: 6px;
+            background: linear-gradient(to right, #c8102e, #f59e0b);
+            border-radius: 9999px;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .theory-tab {
+            transition: all 0.2s ease;
+        }
+
+        .theory-tab.active {
+            background-color: #c8102e;
+            color: white;
+            border-color: #c8102e;
+        }
+
+        .encyclopedia-glow {
+            box-shadow: 0 0 25px -5px rgba(200, 16, 46, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-4">
+                <div class="flex items-center gap-x-3 cursor-pointer" onclick="document.getElementById('fruit-grid').scrollIntoView({ behavior: 'smooth' })">
+                    <div class="w-11 h-11 bg-gradient-to-br from-red-600 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-red-900/50">
+                        <i class="fa-solid fa-apple-alt text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold title-font tracking-tighter">DEVIL FRUIT</h1>
+                        <p class="text-[10px] text-zinc-500 -mt-1 tracking-[3.5px]">ENCYCLOPEDIA <span class="font-mono text-red-500">v2.0</span></p>
+                    </div>
+                </div>
+                <div class="hidden md:block px-3 py-1 bg-zinc-900 rounded-full text-xs border border-zinc-700 flex items-center gap-x-1.5">
+                    <span class="text-emerald-400">●</span> 
+                    <span class="font-mono text-xs">15 FRUITS • 4 CATEGORIES</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2">
+                <!-- Nav Actions -->
+                <button onclick="showQuizModal()" 
+                        class="hidden md:flex items-center gap-x-2 px-4 py-2 text-sm hover:bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all active:scale-[0.985]">
+                    <i class="fa-solid fa-magic mr-1.5"></i>
+                    <span>Find Your Fruit</span>
+                </button>
+                
+                <button onclick="showCollectionModal()" 
+                        class="flex items-center gap-x-2 px-4 py-2 text-sm hover:bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-all active:scale-[0.985]">
+                    <i class="fa-solid fa-bookmark mr-1.5"></i>
+                    <span class="hidden md:inline">Collection</span>
+                    <span id="collection-count" class="bg-red-600 text-white text-[10px] px-1.5 py-px rounded-full font-mono">0</span>
+                </button>
+                
+                <button onclick="showTheoryModal()" 
+                        class="px-5 py-2 bg-white text-zinc-900 hover:bg-zinc-100 text-sm font-semibold rounded-2xl flex items-center gap-x-2 transition-all active:scale-[0.985] shadow-lg">
+                    <i class="fa-solid fa-flask mr-2"></i>
+                    <span>The Pedicel Theory</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="max-w-7xl mx-auto px-6 pt-14 pb-10">
+        <div class="max-w-4xl">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 bg-zinc-900 border border-zinc-700 rounded-3xl text-xs mb-6">
+                <span class="px-2.5 py-0.5 bg-red-600 text-white rounded-2xl text-[10px] font-bold tracking-wider">OFFICIAL FAN ARCHIVE</span>
+                <span class="text-zinc-400">Reimagined with real botany • 2026 Edition</span>
+            </div>
+            
+            <h2 class="text-7xl md:text-8xl font-bold title-font tracking-tighter leading-none mb-6">
+                EVERY DEVIL FRUIT.<br>
+                <span class="bg-gradient-to-r from-red-500 via-orange-400 to-amber-300 bg-clip-text text-transparent">BOTANICALLY CLASSIFIED.</span>
+            </h2>
+            
+            <p class="max-w-xl text-2xl text-zinc-400 mb-10 leading-tight">
+                The definitive guide to the mysterious fruits of the Grand Line — 
+                decoded through the lens of real-world botany.
+            </p>
+            
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+                <div class="flex items-center gap-x-3">
+                    <button onclick="showRandomFruit()" 
+                            class="group flex items-center gap-x-3 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-3xl transition-all active:scale-[0.985] shadow-xl shadow-red-900/40">
+                        <i class="fa-solid fa-dice text-xl group-active:rotate-12 transition-transform"></i>
+                        <span class="text-lg">RANDOM FRUIT</span>
+                    </button>
+                    
+                    <button onclick="enterCompareMode()" 
+                            class="flex items-center gap-x-2 px-5 py-4 border border-zinc-700 hover:bg-zinc-900 rounded-3xl text-sm font-medium transition-all active:scale-[0.985]">
+                        <i class="fa-solid fa-balance-scale"></i>
+                        <span>COMPARE</span>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-x-6 text-sm">
+                    <div class="flex items-center gap-x-2">
+                        <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+                        <span class="text-zinc-400">Live Canon Data</span>
+                    </div>
+                    <div class="text-zinc-500">•</div>
+                    <div onclick="document.getElementById('fruit-grid').scrollIntoView({behavior:'smooth'})" class="cursor-pointer hover:text-white transition-colors flex items-center gap-x-1">
+                        <span>Browse All</span> 
+                        <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Stats Bar -->
+    <div class="max-w-7xl mx-auto px-6 pb-8">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex flex-wrap md:flex-nowrap items-center justify-between gap-4">
+            <div class="flex items-center gap-x-8 w-full md:w-auto">
+                <div class="text-center">
+                    <div id="stat-fruits" class="stat-number text-4xl font-bold text-red-500">0</div>
+                    <div class="text-[10px] text-zinc-500 tracking-widest">FRUITS CATALOGED</div>
+                </div>
+                <div class="text-center">
+                    <div id="stat-logia" class="stat-number text-4xl font-bold text-slate-300">0</div>
+                    <div class="text-[10px] text-zinc-500 tracking-widest">LOGIA</div>
+                </div>
+                <div class="text-center">
+                    <div id="stat-zoan" class="stat-number text-4xl font-bold text-blue-400">0</div>
+                    <div class="text-[10px] text-zinc-500 tracking-widest">ZOAN</div>
+                </div>
+                <div class="text-center">
+                    <div id="stat-paramecia" class="stat-number text-4xl font-bold text-yellow-400">0</div>
+                    <div class="text-[10px] text-zinc-500 tracking-widest">PARAMECIA</div>
+                </div>
+            </div>
+            
+            <div class="hidden md:block h-8 w-px bg-zinc-700"></div>
+            
+            <div class="flex items-center gap-x-3 text-xs text-zinc-400">
+                <div class="px-3 py-1 bg-zinc-800 rounded-2xl flex items-center gap-x-1.5">
+                    <i class="fa-solid fa-globe text-emerald-400"></i>
+                    <span>4 Botanical Classes</span>
+                </div>
+                <div class="px-3 py-1 bg-zinc-800 rounded-2xl">Updated • Marineford Arc</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="max-w-7xl mx-auto px-6 pb-6 sticky top-[73px] z-40 bg-zinc-950/95 backdrop-blur-xl py-4 border-b border-zinc-800">
+        <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            
+            <!-- Search -->
+            <div class="relative w-full lg:w-96">
+                <i class="fa-solid fa-search absolute left-4 top-3.5 text-zinc-500"></i>
+                <input id="search-input" 
+                       type="text" 
+                       placeholder="Search fruits, users, powers, or notes..."
+                       class="w-full bg-zinc-900 border border-zinc-700 focus:border-red-600 pl-11 py-3.5 rounded-3xl text-sm placeholder:text-zinc-500 focus:outline-none transition-all"
+                       onkeyup="filterFruits()">
+                <div class="absolute right-3 top-3.5 text-[10px] px-2 py-px bg-zinc-800 text-zinc-400 rounded">⌘K</div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
+                <!-- Power Type Filters -->
+                <div class="flex items-center gap-x-1 bg-zinc-900 border border-zinc-700 rounded-3xl p-1">
+                    <button onclick="filterByType('all')" id="filter-all"
+                            class="filter-btn active px-4 py-2 text-xs rounded-3xl font-medium flex items-center gap-x-1.5">ALL</button>
+                    <button onclick="filterByType('Paramecia')" id="filter-Paramecia"
+                            class="filter-btn px-4 py-2 text-xs rounded-3xl font-medium hover:bg-zinc-800 flex items-center gap-x-1"><i class="fa-solid fa-magic text-yellow-400"></i> <span>Paramecia</span></button>
+                    <button onclick="filterByType('Zoan')" id="filter-Zoan"
+                            class="filter-btn px-4 py-2 text-xs rounded-3xl font-medium hover:bg-zinc-800 flex items-center gap-x-1"><i class="fa-solid fa-dragon text-blue-400"></i> <span>Zoan</span></button>
+                    <button onclick="filterByType('Logia')" id="filter-Logia"
+                            class="filter-btn px-4 py-2 text-xs rounded-3xl font-medium hover:bg-zinc-800 flex items-center gap-x-1"><i class="fa-solid fa-sun text-slate-300"></i> <span>Logia</span></button>
+                    <button onclick="filterByType('Artificial')" id="filter-Artificial"
+                            class="filter-btn px-4 py-2 text-xs rounded-3xl font-medium hover:bg-zinc-800 flex items-center gap-x-1"><i class="fa-solid fa-microchip text-emerald-400"></i> <span>Artificial</span></button>
+                </div>
+
+                <!-- Botanical Filter -->
+                <select id="botanical-filter" onchange="filterFruits()" 
+                        class="bg-zinc-900 border border-zinc-700 text-sm rounded-3xl px-5 py-3 focus:outline-none focus:border-red-600 font-medium">
+                    <option value="">All Botanical Types</option>
+                    <option value="Simple">Simple Berry</option>
+                    <option value="Aggregate">Aggregate Berry</option>
+                    <option value="Multiple">Multiple Fruit</option>
+                    <option value="Pome">Pome (Apple-shaped)</option>
+                </select>
+
+                <!-- Sort -->
+                <select id="sort-select" onchange="filterFruits()" 
+                        class="bg-zinc-900 border border-zinc-700 text-sm rounded-3xl px-5 py-3 focus:outline-none focus:border-red-600 font-medium">
+                    <option value="id">Newest First</option>
+                    <option value="name">A → Z</option>
+                    <option value="powerType">By Power Type</option>
+                    <option value="botanical">By Botanical Class</option>
+                    <option value="user">By User</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fruit Grid -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h3 class="text-2xl font-semibold tracking-tight">The Grand Line Archive</h3>
+                <p class="text-sm text-zinc-500">15 canon fruits • 100% botanically analyzed</p>
+            </div>
+            <div class="text-xs px-3 py-1 bg-zinc-900 rounded-full border border-zinc-700 text-zinc-400 flex items-center gap-x-1">
+                <i class="fa-solid fa-sync fa-spin-pulse text-emerald-400"></i>
+                <span>SYNCHRONIZED WITH CANON</span>
+            </div>
+        </div>
+        
+        <div id="fruit-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Botanical Explorer -->
+    <div class="max-w-7xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-x-2 text-red-500 mb-3">
+                <i class="fa-solid fa-microscope"></i>
+                <span class="uppercase text-xs tracking-[3px] font-semibold">Interactive Explorer</span>
+            </div>
+            <h3 class="text-4xl font-bold tracking-tight">Botanical Fruit Classes</h3>
+            <p class="text-zinc-400 max-w-md mx-auto mt-3">Click any class to see matching fruits and deep analysis</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Simple Berry -->
+            <div onclick="filterByBotanical('Simple')" class="group bg-zinc-900 border border-zinc-700 hover:border-red-600/50 rounded-3xl p-6 cursor-pointer transition-all hover:-translate-y-1">
+                <div class="flex items-center gap-x-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-apple-alt text-3xl text-red-400"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-xl">Simple Berry</div>
+                        <div class="text-xs text-emerald-400">7 fruits • 47%</div>
+                    </div>
+                </div>
+                <p class="text-sm text-zinc-400 leading-relaxed">Classic single-carpel structure. Clean T-pedicel with uniform spirals. Most common among Logia and straightforward Paramecia.</p>
+                <div class="mt-5 flex items-center text-xs text-red-400 group-hover:text-red-500">
+                    <span>EXPLORE CLASS</span> <i class="fa-solid fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            
+            <!-- Aggregate Berry -->
+            <div onclick="filterByBotanical('Aggregate')" class="group bg-zinc-900 border border-zinc-700 hover:border-amber-600/50 rounded-3xl p-6 cursor-pointer transition-all hover:-translate-y-1">
+                <div class="flex items-center gap-x-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-yellow-500/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-th-large text-3xl text-amber-400"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-xl">Aggregate Berry</div>
+                        <div class="text-xs text-emerald-400">4 fruits • 27%</div>
+                    </div>
+                </div>
+                <p class="text-sm text-zinc-400 leading-relaxed">Cluster of small drupelets. Drooping or tufted pedicels. Ideal for splitting, sand, and magma-type powers.</p>
+                <div class="mt-5 flex items-center text-xs text-amber-400 group-hover:text-amber-500">
+                    <span>EXPLORE CLASS</span> <i class="fa-solid fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            
+            <!-- Multiple Fruit -->
+            <div onclick="filterByBotanical('Multiple')" class="group bg-zinc-900 border border-zinc-700 hover:border-purple-600/50 rounded-3xl p-6 cursor-pointer transition-all hover:-translate-y-1">
+                <div class="flex items-center gap-x-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-layer-group text-3xl text-purple-400"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-xl">Multiple Fruit</div>
+                        <div class="text-xs text-emerald-400">2 fruits • 13%</div>
+                    </div>
+                </div>
+                <p class="text-sm text-zinc-400 leading-relaxed">Fused from many flowers. Crown or petal-like pedicels. Perfect for spawning and mythical regeneration powers.</p>
+                <div class="mt-5 flex items-center text-xs text-purple-400 group-hover:text-purple-500">
+                    <span>EXPLORE CLASS</span> <i class="fa-solid fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            
+            <!-- Pome -->
+            <div onclick="filterByBotanical('Pome')" class="group bg-zinc-900 border border-zinc-700 hover:border-emerald-600/50 rounded-3xl p-6 cursor-pointer transition-all hover:-translate-y-1">
+                <div class="flex items-center gap-x-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-globe text-3xl text-emerald-400"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-xl">Pome</div>
+                        <div class="text-xs text-emerald-400">2 fruits • 13%</div>
+                    </div>
+                </div>
+                <p class="text-sm text-zinc-400 leading-relaxed">Apple-shaped with tough core. Small regular stems. Reserved for artificial and world-shaking quake powers.</p>
+                <div class="mt-5 flex items-center text-xs text-emerald-400 group-hover:text-emerald-500">
+                    <span>EXPLORE CLASS</span> <i class="fa-solid fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theory Teaser -->
+    <div class="max-w-7xl mx-auto px-6 py-16 border-t border-zinc-800 bg-zinc-900/50">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 text-red-500 mb-4">
+                <i class="fa-solid fa-flask text-xl"></i>
+                <span class="uppercase text-xs tracking-[3px] font-bold">FAN HYPOTHESIS v2.0</span>
+            </div>
+            <h3 class="text-5xl font-bold tracking-tighter mb-6">The Pedicel Theory</h3>
+            <p class="text-xl text-zinc-400 max-w-2xl mx-auto">
+                What if the stem, swirl pattern, and botanical structure of every Devil Fruit 
+                reveals an ancient, hidden classification system far beyond Paramecia, Zoan, and Logia?
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-4 mt-10">
+                <button onclick="showTheoryModal()" 
+                        class="px-10 py-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-3xl text-sm font-semibold flex items-center gap-x-3 transition-all group">
+                    <span>DIVE INTO THE FULL THEORY</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </button>
+                <button onclick="showPedicelVisualizer()" 
+                        class="px-6 py-4 border border-zinc-700 hover:bg-zinc-800 rounded-3xl text-sm font-medium flex items-center gap-x-2">
+                    <i class="fa-solid fa-project-diagram"></i>
+                    <span>Visualize Pedicels</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-14 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-y-10">
+            <div class="md:col-span-5">
+                <div class="flex items-center gap-x-3 mb-4">
+                    <div class="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-apple-alt text-white"></i>
+                    </div>
+                    <span class="font-bold text-2xl title-font tracking-tight">DEVIL FRUIT ENCYCLOPEDIA</span>
+                </div>
+                <p class="text-zinc-400 max-w-xs">A fan-made botanical archive. Not affiliated with Eiichiro Oda, Shueisha, or Toei Animation.</p>
+                
+                <div class="mt-8 flex gap-x-4">
+                    <a href="#" class="text-zinc-400 hover:text-white"><i class="fa-brands fa-twitter text-xl"></i></a>
+                    <a href="#" class="text-zinc-400 hover:text-white"><i class="fa-brands fa-discord text-xl"></i></a>
+                    <a href="#" class="text-zinc-400 hover:text-white"><i class="fa-brands fa-github text-xl"></i></a>
+                </div>
+            </div>
+            
+            <div class="md:col-span-3">
+                <div class="uppercase text-xs tracking-widest text-zinc-500 mb-4">QUICK LINKS</div>
+                <div class="space-y-2 text-sm">
+                    <div onclick="document.getElementById('fruit-grid').scrollIntoView({behavior:'smooth'})" class="cursor-pointer hover:text-red-400 transition-colors">Full Archive</div>
+                    <div onclick="showTheoryModal()" class="cursor-pointer hover:text-red-400 transition-colors">The Pedicel Theory</div>
+                    <div onclick="showQuizModal()" class="cursor-pointer hover:text-red-400 transition-colors">Which Fruit Are You?</div>
+                    <div onclick="showPedicelVisualizer()" class="cursor-pointer hover:text-red-400 transition-colors">Pedicel Visualizer</div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-4">
+                <div class="uppercase text-xs tracking-widest text-zinc-500 mb-4">DATA SOURCES</div>
+                <div class="text-xs text-zinc-400 leading-relaxed">
+                    Compiled from 1,000+ canon chapters, SBS, databooks, and original botanical cross-analysis.<br><br>
+                    All rights to Devil Fruit concepts belong to Eiichiro Oda. This project exists purely for educational fan appreciation.
+                </div>
+                <div class="mt-6 text-[10px] text-zinc-500">v2.0 • Last updated: April 2026 • 15/142 fruits analyzed</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Detail Modal -->
+    <div id="modal" onclick="if (event.target.id === 'modal') hideModal()" class="hidden fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" 
+             class="modal bg-zinc-900 border border-zinc-700 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl">
+            
+            <div class="p-8 md:p-10">
+                <div class="flex justify-between items-start mb-8">
+                    <div id="modal-header" class="flex-1"></div>
+                    <button onclick="hideModal()" class="text-zinc-400 hover:text-white p-2 -mr-2 -mt-2 transition-colors">
+                        <i class="fa-solid fa-times text-3xl"></i>
+                    </button>
+                </div>
+                
+                <div id="modal-body" class="space-y-8">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            
+            <div class="bg-zinc-950 px-8 py-5 border-t border-zinc-800 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-x-3">
+                    <div class="flex items-center gap-x-1.5 text-emerald-400">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span class="font-mono tracking-wider">CANON CONFIRMED</span>
+                    </div>
+                    <div class="px-2.5 py-px bg-zinc-800 rounded text-[10px]">MARINEFORD • 2026</div>
+                </div>
+                
+                <div class="flex items-center gap-x-4">
+                    <button onclick="addCurrentToCollection()" class="flex items-center gap-x-2 text-red-400 hover:text-red-500 transition-colors text-xs font-medium">
+                        <i class="fa-solid fa-heart"></i>
+                        <span>ADD TO COLLECTION</span>
+                    </button>
+                    <div onclick="hideModal()" class="cursor-pointer text-zinc-400 hover:text-white flex items-center gap-x-1.5 text-xs">
+                        <span>CLOSE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div id="collection-modal" onclick="if (event.target.id === 'collection-modal') hideCollectionModal()" class="hidden fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-zinc-900 border border-zinc-700 w-full max-w-4xl rounded-3xl overflow-hidden">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight">My Devil Fruit Collection</h2>
+                        <p class="text-sm text-zinc-400">Your personal archive of analyzed fruits</p>
+                    </div>
+                    <button onclick="hideCollectionModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-2xl"></i></button>
+                </div>
+                
+                <div id="collection-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[280px]">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div class="mt-8 flex items-center justify-between text-xs border-t border-zinc-800 pt-6">
+                    <div class="text-zinc-400">Fruits in collection: <span id="collection-total" class="font-mono text-red-400">0</span></div>
+                    <div class="flex gap-x-3">
+                        <button onclick="exportCollection()" class="px-4 py-2 border border-zinc-700 rounded-2xl hover:bg-zinc-800 flex items-center gap-x-2 text-xs">
+                            <i class="fa-solid fa-download"></i> <span>EXPORT</span>
+                        </button>
+                        <button onclick="clearCollection()" class="px-4 py-2 text-red-400 hover:text-red-500 flex items-center gap-x-2 text-xs">
+                            <i class="fa-solid fa-trash"></i> <span>CLEAR ALL</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theory Modal -->
+    <div id="theory-modal" onclick="if (event.target.id === 'theory-modal') hideTheoryModal()" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-zinc-900 border border-zinc-700 w-full max-w-4xl rounded-3xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div class="p-8 border-b border-zinc-800 flex items-center justify-between">
+                <div class="flex items-center gap-x-4">
+                    <i class="fa-solid fa-flask text-red-500 text-4xl"></i>
+                    <div>
+                        <h2 class="text-4xl font-bold tracking-tight">The Pedicel Theory</h2>
+                        <p class="text-sm text-zinc-400">A fan hypothesis on hidden Devil Fruit organization</p>
+                    </div>
+                </div>
+                <button onclick="hideTheoryModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-2xl"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-auto p-8">
+                <!-- Theory Tabs -->
+                <div class="flex gap-x-1 mb-8 border-b border-zinc-800">
+                    <button onclick="switchTheoryTab(0)" class="theory-tab active px-6 py-3 text-sm font-medium rounded-t-2xl border-b-2 border-red-600" id="theory-tab-0">Overview</button>
+                    <button onclick="switchTheoryTab(1)" class="theory-tab px-6 py-3 text-sm font-medium hover:bg-zinc-800 rounded-t-2xl" id="theory-tab-1">Pedicel Types</button>
+                    <button onclick="switchTheoryTab(2)" class="theory-tab px-6 py-3 text-sm font-medium hover:bg-zinc-800 rounded-t-2xl" id="theory-tab-2">Berry Classification</button>
+                    <button onclick="switchTheoryTab(3)" class="theory-tab px-6 py-3 text-sm font-medium hover:bg-zinc-800 rounded-t-2xl" id="theory-tab-3">Swirl Patterns</button>
+                </div>
+                
+                <div id="theory-content">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <div class="bg-zinc-950 px-8 py-5 border-t border-zinc-800 text-xs text-zinc-400 flex items-center justify-between">
+                <div>This is 100% fan speculation. No official confirmation from Eiichiro Oda.</div>
+                <div class="font-mono text-red-500">HYPOTHESIS v2.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" onclick="if (event.target.id === 'quiz-modal') hideQuizModal()" class="hidden fixed inset-0 bg-black/90 z-[130] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-zinc-900 border border-zinc-700 w-full max-w-lg rounded-3xl overflow-hidden">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight">Which Devil Fruit Are You?</h2>
+                        <p class="text-sm text-zinc-400 mt-1">Answer 5 questions to discover your perfect match</p>
+                    </div>
+                    <button onclick="hideQuizModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+                </div>
+                
+                <div id="quiz-content">
+                    <!-- Dynamic quiz steps populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#c8102e');
+            
+            // Custom tailwind config if needed
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .swirl-line {
+                    animation: swirl-rotate 20s linear infinite;
+                }
+                @keyframes swirl-rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Fruit Data - Expanded to 15 with rich botanical details
+        let fruits = [
+            {
+                id: 1,
+                name: "Hito Hito no Mi, Model: Nika",
+                aka: "Gomu Gomu no Mi",
+                botanical: "Simple berry",
+                pedicel: "Classic clean T-shaped with two small leaves",
+                swirl: "Tight, perfectly uniform spirals",
+                powerType: "Mythical Zoan",
+                user: "Monkey D. Luffy",
+                notes: "Father of them all. Modeled after the real-life Yubari King melon. The most 'awakened' fruit in existence.",
+                description: "The fruit that grants the user the powers of the 'Sun God' Nika, allowing them to stretch their body like rubber and bring imagination to life.",
+                color: "#c8102e",
+                rarity: "Legendary",
+                awakened: true
+            },
+            {
+                id: 2,
+                name: "Bara Bara no Mi",
+                aka: "Chop-Chop Fruit",
+                botanical: "Aggregate berry",
+                pedicel: "Green leafy tufted crown (drooping leaf setup)",
+                swirl: "Tight swirls on each individual sphere",
+                powerType: "Paramecia",
+                user: "Buggy the Clown",
+                notes: "Cluster structure matches its ability to split the body into pieces. One of the most underrated Logia-adjacent powers.",
+                description: "Allows the user to split their own body into pieces and control them freely, making them immune to slashing attacks.",
+                color: "#f59e0b",
+                rarity: "Rare"
+            },
+            {
+                id: 3,
+                name: "Nuru Nuru no Mi",
+                aka: "Slip-Slip Fruit",
+                botanical: "Simple berry",
+                pedicel: "Classic clean T-shaped with two small leaves",
+                swirl: "Tight, neat uniform spirals",
+                powerType: "Paramecia",
+                user: "Alvida",
+                notes: "Matches the clean T-pedicel group with straightforward body-altering effects. Extremely effective against blunt force.",
+                description: "Makes the user's body incredibly slippery, causing attacks and objects to slide off harmlessly.",
+                color: "#eab308",
+                rarity: "Common"
+            },
+            {
+                id: 4,
+                name: "Tori Tori no Mi, Model: Phoenix",
+                aka: "Bird-Bird Fruit, Model Phoenix",
+                botanical: "Multiple fruit",
+                pedicel: "Crown of long, stiff, blade-shaped leaves (flame-like, no T)",
+                swirl: "Swirls on each individual segment",
+                powerType: "Mythical Zoan",
+                user: "Marco the Phoenix",
+                notes: "Breaks the T-pedicel pattern with a unique flame-like crown, fitting its mythical status and regeneration.",
+                description: "Transforms the user into a phoenix with blue flames that grant regeneration and flight.",
+                color: "#3b82f6",
+                rarity: "Legendary"
+            },
+            {
+                id: 5,
+                name: "Yami Yami no Mi",
+                aka: "Dark-Dark Fruit",
+                botanical: "Aggregate fruit",
+                pedicel: "Light green strawberry-style stem with drooping leaves",
+                swirl: "Swirls on each individual teardrop component",
+                powerType: "Logia",
+                user: "Marshall D. Teach",
+                notes: "Aggregate structure with drooping leaves, similar to Bara Bara but with dark energy absorption. The only Logia that can nullify other fruits.",
+                description: "Grants the power to create and control darkness that can nullify other Devil Fruit powers.",
+                color: "#1f2937",
+                rarity: "Legendary"
+            },
+            {
+                id: 6,
+                name: "SMILE Fruits",
+                aka: "Artificial Zoan Fruits",
+                botanical: "Pome (apple-shaped)",
+                pedicel: "Small regular apple-style stem",
+                swirl: "None — covered in colored dots",
+                powerType: "Artificial",
+                user: "Various Beasts Pirates",
+                notes: "Man-made by Caesar Clown. Completely different from natural Devil Fruits. 90% failure rate.",
+                description: "Failed artificial Zoan fruits that grant animal traits but often result in monstrous or useless hybrids.",
+                color: "#22c55e",
+                rarity: "Common"
+            },
+            {
+                id: 7,
+                name: "Uo Uo no Mi, Model: Pink Dragon",
+                aka: "Fish-Fish Fruit, Model Pink Dragon",
+                botanical: "Pome (apple-shaped)",
+                pedicel: "Small regular apple-style stem",
+                swirl: "None — double ring patterns",
+                powerType: "Artificial",
+                user: "Kozuki Momonosuke",
+                notes: "Artificial Mythical Zoan created for Momonosuke. Shares design language with SMILEs but far more successful.",
+                description: "Artificial fruit that transforms the user into a pink dragon with flight and fire abilities.",
+                color: "#ec4899",
+                rarity: "Rare"
+            },
+            {
+                id: 8,
+                name: "Mera Mera no Mi",
+                aka: "Flame-Flame Fruit",
+                botanical: "Simple berry",
+                pedicel: "T-shaped stem with flickering flame-shaped leaves",
+                swirl: "Radiating spiral patterns resembling fire",
+                powerType: "Logia",
+                user: "Portgas D. Ace / Sabo",
+                notes: "The heat of this fruit's swirls mirrors its destructive power. One of the most iconic Logia fruits.",
+                description: "Allows the user to create, control, and transform into fire at will.",
+                color: "#ef4444",
+                rarity: "Rare"
+            },
+            {
+                id: 9,
+                name: "Suna Suna no Mi",
+                aka: "Sand-Sand Fruit",
+                botanical: "Aggregate berry",
+                pedicel: "Dry, vine-like stem with granular texture",
+                swirl: "Swirls filled with sand-like particles",
+                powerType: "Logia",
+                user: "Sir Crocodile",
+                notes: "The desiccated pedicel reflects its dehydrating abilities. Perfectly suited for desert environments.",
+                description: "Grants the power to create and control sand, dehydrate anything touched, and create sandstorms.",
+                color: "#d97706",
+                rarity: "Rare"
+            },
+            {
+                id: 10,
+                name: "Hana Hana no Mi",
+                aka: "Flower-Flower Fruit",
+                botanical: "Multiple fruit",
+                pedicel: "Elegant floral crown with layered petal leaves",
+                swirl: "Delicate, petal-arranged swirls on each bloom",
+                powerType: "Paramecia",
+                user: "Nico Robin",
+                notes: "The multiple blooming structure perfectly suits spawning limbs anywhere. One of the most versatile Paramecia.",
+                description: "Enables the user to sprout copies of their body parts as flowers from any surface within range.",
+                color: "#a855f7",
+                rarity: "Rare"
+            },
+            {
+                id: 11,
+                name: "Ope Ope no Mi",
+                aka: "Op-Op Fruit",
+                botanical: "Simple berry",
+                pedicel: "Precision T-stem with scalpel-like leaf edges",
+                swirl: "Geometric, surgical spiral patterns",
+                powerType: "Paramecia",
+                user: "Trafalgar D. Water Law",
+                notes: "The clean, precise pedicel and swirls reflect its 'room' and surgical nature. Considered the ultimate medical fruit.",
+                description: "Creates a spherical 'room' where the user can manipulate anything inside, including teleportation and shock therapy.",
+                color: "#06b6d4",
+                rarity: "Legendary"
+            },
+            {
+                id: 12,
+                name: "Gura Gura no Mi",
+                aka: "Quake-Quake Fruit",
+                botanical: "Pome",
+                pedicel: "Thick, cracked apple-stem with seismic ridges",
+                swirl: "Fractured, earthquake-like crack patterns",
+                powerType: "Paramecia",
+                user: "Edward Newgate",
+                notes: "The pome's sturdy form and cracked patterns embody the power to shatter the world itself. The strongest Paramecia.",
+                description: "Allows the user to create devastating shockwaves and earthquakes by cracking the air itself.",
+                color: "#78716c",
+                rarity: "Legendary"
+            },
+            {
+                id: 13,
+                name: "Hie Hie no Mi",
+                aka: "Ice-Ice Fruit",
+                botanical: "Simple berry",
+                pedicel: "T-stem encased in frost with icicle protrusions",
+                swirl: "Crystalline, snowflake-inspired spirals",
+                powerType: "Logia",
+                user: "Kuzan (Aokiji)",
+                notes: "Frozen pedicel group shares traits with clean T-stems but adapted for elemental control. Former Admiral's fruit.",
+                description: "Grants the ability to create, control, and become ice. Can freeze entire oceans.",
+                color: "#0ea5e9",
+                rarity: "Rare"
+            },
+            {
+                id: 14,
+                name: "Pika Pika no Mi",
+                aka: "Light-Light Fruit",
+                botanical: "Simple berry",
+                pedicel: "Radiant T-stem with light-ray leaves",
+                swirl: "Blinding, speed-of-light spiral bursts",
+                powerType: "Logia",
+                user: "Borsalino (Kizaru)",
+                notes: "The luminous quality of the pedicel hints at its unmatched speed. The fastest Logia in existence.",
+                description: "Allows the user to create, control, and transform into light, moving at light speed with laser attacks.",
+                color: "#fde047",
+                rarity: "Rare"
+            },
+            {
+                id: 15,
+                name: "Magu Magu no Mi",
+                aka: "Magma-Magma Fruit",
+                botanical: "Aggregate berry",
+                pedicel: "Molten, dripping stem with lava droplet leaves",
+                swirl: "Bubbling, viscous swirls on each magma glob",
+                powerType: "Logia",
+                user: "Sakazuki (Akainu)",
+                notes: "The aggregate dripping structure fits its superior heat and destructive force over fire. Current Fleet Admiral's fruit.",
+                description: "Enables the user to create and control magma, which is hotter and more destructive than fire.",
+                color: "#b91c1c",
+                rarity: "Legendary"
+            }
+        ];
+
+        // Favorites (persisted in localStorage)
+        let favorites = JSON.parse(localStorage.getItem('devilFruitFavorites') || '[]');
+
+        function updateCollectionCount() {
+            const countEl = document.getElementById('collection-count');
+            if (countEl) countEl.textContent = favorites.length;
+        }
+
+        function toggleFavorite(fruitId, event) {
+            event.stopImmediatePropagation();
+            const index = favorites.indexOf(fruitId);
+            
+            if (index === -1) {
+                favorites.push(fruitId);
+                launchConfetti();
+            } else {
+                favorites.splice(index, 1);
+            }
+            
+            localStorage.setItem('devilFruitFavorites', JSON.stringify(favorites));
+            updateCollectionCount();
+            
+            // Re-render to update heart icons
+            filterFruits();
+        }
+
+        function isFavorite(fruitId) {
+            return favorites.includes(fruitId);
+        }
+
+        function addCurrentToCollection() {
+            const modal = document.getElementById('modal');
+            if (!modal.dataset.currentFruitId) return;
+            
+            const fruitId = parseInt(modal.dataset.currentFruitId);
+            if (!favorites.includes(fruitId)) {
+                favorites.push(fruitId);
+                localStorage.setItem('devilFruitFavorites', JSON.stringify(favorites));
+                updateCollectionCount();
+                launchConfetti();
+                
+                const heartBtn = document.querySelector('#modal .fa-heart');
+                if (heartBtn) heartBtn.classList.add('text-red-500');
+            }
+            
+            showToast('Added to your collection!');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 px-6 py-3 rounded-2xl text-sm flex items-center gap-x-2 shadow-xl z-[200]';
+            toast.innerHTML = `
+                <i class="fa-solid fa-check-circle text-emerald-400"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2200);
+        }
+
+        function launchConfetti() {
+            const colors = ['#c8102e', '#f59e0b', '#3b82f6', '#22c55e', '#a855f7'];
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.inset = '0';
+            container.style.pointerEvents = 'none';
+            container.style.zIndex = '99999';
+            document.body.appendChild(container);
+            
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'absolute';
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.top = '-20px';
+                    particle.style.width = Math.random() * 8 + 6 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    particle.style.opacity = Math.random() * 0.7 + 0.6;
+                    container.appendChild(particle);
+                    
+                    const duration = Math.random() * 2800 + 2200;
+                    const angle = Math.random() * 60 - 30;
+                    
+                    particle.animate([
+                        { 
+                            transform: `translateY(0) rotate(0deg)`,
+                            opacity: particle.style.opacity 
+                        },
+                        { 
+                            transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 8}deg)`,
+                            opacity: 0 
+                        }
+                    ], {
+                        duration: duration,
+                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+                    }).onfinish = () => particle.remove();
+                }, i * 1.5);
+            }
+            
+            setTimeout(() => container.remove(), 6000);
+        }
+
+        // Get icon for fruit
+        function getFruitIcon(fruit) {
+            const name = fruit.name.toLowerCase();
+            const type = fruit.powerType;
+            
+            if (name.includes('nika') || name.includes('gomu')) return 'fa-apple-alt';
+            if (name.includes('bara')) return 'fa-puzzle-piece';
+            if (name.includes('nuru') || name.includes('slip')) return 'fa-oil-can';
+            if (name.includes('phoenix')) return 'fa-dove';
+            if (name.includes('yami') || name.includes('dark')) return 'fa-moon';
+            if (name.includes('smile')) return 'fa-microchip';
+            if (name.includes('dragon')) return 'fa-dragon';
+            if (name.includes('mera') || name.includes('flame')) return 'fa-fire';
+            if (name.includes('suna') || name.includes('sand')) return 'fa-cloud';
+            if (name.includes('hana') || name.includes('flower')) return 'fa-seedling';
+            if (name.includes('ope') || name.includes('op-op')) return 'fa-stethoscope';
+            if (name.includes('gura') || name.includes('quake')) return 'fa-globe';
+            if (name.includes('hie') || name.includes('ice')) return 'fa-snowflake';
+            if (name.includes('pika') || name.includes('light')) return 'fa-bolt';
+            if (name.includes('magu') || name.includes('magma')) return 'fa-mountain';
+            
+            if (type.includes('Zoan')) return 'fa-dragon';
+            if (type === 'Logia') return 'fa-sun';
+            if (type === 'Paramecia') return 'fa-magic';
+            if (type === 'Artificial') return 'fa-flask';
+            return 'fa-apple-alt';
+        }
+
+        // Render fruits with enhanced visuals
+        function renderFruits(filteredFruits) {
+            const grid = document.getElementById('fruit-grid');
+            grid.innerHTML = '';
+
+            const toRender = filteredFruits || fruits;
+
+            toRender.forEach(fruit => {
+                const card = document.createElement('div');
+                card.className = `devil-fruit-card bg-zinc-900 border border-zinc-700 rounded-3xl overflow-hidden cursor-pointer group`;
+                card.onclick = () => showFruitModal(fruit);
+                
+                const powerColor = getPowerColor(fruit.powerType);
+                const iconClass = getFruitIcon(fruit);
+                const isFav = isFavorite(fruit.id);
+                
+                let visualHTML = `
+                    <div class="fruit-visual h-48 relative" style="background: linear-gradient(135deg, ${fruit.color}15, #111827);">
+                        <div class="swirl-pattern"></div>
+                        
+                        <!-- Dynamic fruit visual -->
+                        <div class="absolute inset-0 flex items-center justify-center fruit-card-visual">
+                            <div class="relative w-20 h-20 flex items-center justify-center">
+                                <!-- Main orb -->
+                                <div class="w-16 h-16 rounded-full border-[5px] flex items-center justify-center" 
+                                     style="background: ${fruit.color}22; border-color: ${fruit.color}66; box-shadow: 0 0 30px ${fruit.color}33, inset 0 0 20px ${fruit.color}22;">
+                                    <i class="fa-solid ${iconClass} text-4xl" style="color: ${fruit.color}"></i>
+                                </div>
+                                
+                                <!-- Special effects -->
+                                ${fruit.powerType.includes('Mythical') ? `
+                                    <div class="absolute -inset-3 border border-white/20 rounded-full animate-[ping_3s_ease-in-out_infinite]"></div>
+                                ` : ''}
+                                ${fruit.awakened ? `
+                                    <div class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center ring-2 ring-red-900">
+                                        <i class="fa-solid fa-bolt text-[8px] text-white"></i>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <!-- Type badge -->
+                        <div class="absolute top-4 right-4">
+                            <span class="type-badge px-3 py-1 rounded-2xl text-white text-[10px] shadow" 
+                                  style="background-color: ${powerColor}">
+                                ${fruit.powerType}
+                            </span>
+                        </div>
+                        
+                        ${fruit.rarity === 'Legendary' ? `
+                            <div class="absolute top-4 left-4">
+                                <span class="px-2 py-px text-[9px] bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold rounded">LEGENDARY</span>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Favorite heart -->
+                        <button onclick="toggleFavorite(${fruit.id}, event)" 
+                                class="absolute bottom-4 right-4 w-8 h-8 flex items-center justify-center bg-black/60 backdrop-blur rounded-full transition-all hover:bg-black/80 collection-heart">
+                            <i class="fa-solid fa-heart text-sm ${isFav ? 'text-red-500' : 'text-white/60'}"></i>
+                        </button>
+                    </div>
+                `;
+                
+                card.innerHTML = `
+                    ${visualHTML}
+                    
+                    <div class="p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-[15px] leading-tight tracking-tight group-hover:text-red-400 transition-colors line-clamp-2">${fruit.name}</h3>
+                                ${fruit.aka ? `<p class="text-[10px] text-zinc-500 mt-0.5 truncate">${fruit.aka}</p>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 flex items-center gap-2 flex-wrap">
+                            <span class="text-[10px] px-2.5 py-px rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
+                                ${fruit.botanical}
+                            </span>
+                            
+                            <span class="text-[10px] px-2.5 py-px rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700 flex items-center gap-1">
+                                <i class="fa-solid fa-leaf text-[8px]"></i> 
+                                <span>${getPedicelShort(fruit.pedicel)}</span>
+                            </span>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-x-2 min-w-0">
+                                <div class="w-6 h-6 bg-zinc-800 rounded-full flex-shrink-0 flex items-center justify-center text-[10px]">
+                                    <i class="fa-solid fa-user text-zinc-500"></i>
+                                </div>
+                                <span class="text-zinc-400 truncate max-w-[105px]">${fruit.user}</span>
+                            </div>
+                            
+                            <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-red-500 transition-colors flex-shrink-0"></i>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function getPowerColor(type) {
+            if (type.includes('Mythical')) return '#8b5cf6';
+            switch(type) {
+                case 'Paramecia': return '#eab308';
+                case 'Zoan': return '#3b82f6';
+                case 'Logia': return '#64748b';
+                case 'Artificial': return '#22c55e';
+                default: return '#64748b';
+            }
+        }
+
+        function getPedicelShort(pedicel) {
+            if (pedicel.includes('T-shaped')) return 'T-Stem';
+            if (pedicel.includes('crown') || pedicel.includes('flame') || pedicel.includes('petal')) return 'Crown';
+            if (pedicel.includes('apple')) return 'Apple Stem';
+            if (pedicel.includes('drooping') || pedicel.includes('vine') || pedicel.includes('dripping')) return 'Drooping';
+            if (pedicel.includes('frost') || pedicel.includes('icicle')) return 'Frozen';
+            if (pedicel.includes('radiant') || pedicel.includes('light-ray')) return 'Radiant';
+            return 'Unique';
+        }
+
+        // Filter functions
+        let currentTypeFilter = 'all';
+
+        function filterByType(type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('filter-active', 'bg-red-600', 'text-white');
+                btn.classList.add('hover:bg-zinc-800');
+            });
+            
+            if (type === 'all') {
+                document.getElementById('filter-all').classList.add('filter-active', 'bg-red-600', 'text-white');
+            } else {
+                const btn = document.getElementById('filter-' + type);
+                if (btn) btn.classList.add('filter-active', 'bg-red-600', 'text-white');
+            }
+            
+            currentTypeFilter = type;
+            filterFruits();
+        }
+
+        function filterByBotanical(botanical) {
+            currentTypeFilter = 'all';
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-active', 'bg-red-600', 'text-white'));
+            document.getElementById('filter-all').classList.add('filter-active', 'bg-red-600', 'text-white');
+            
+            document.getElementById('botanical-filter').value = botanical;
+            
+            filterFruits();
+            
+            document.getElementById('fruit-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function filterFruits() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const botanicalFilter = document.getElementById('botanical-filter').value;
+            const sortMode = document.getElementById('sort-select').value;
+
+            let filtered = [...fruits];
+
+            if (currentTypeFilter !== 'all') {
+                filtered = filtered.filter(f => f.powerType === currentTypeFilter);
+            }
+
+            if (botanicalFilter) {
+                filtered = filtered.filter(f => f.botanical.includes(botanicalFilter));
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(f => 
+                    f.name.toLowerCase().includes(searchTerm) ||
+                    (f.aka && f.aka.toLowerCase().includes(searchTerm)) ||
+                    f.user.toLowerCase().includes(searchTerm) ||
+                    f.description.toLowerCase().includes(searchTerm) ||
+                    f.notes.toLowerCase().includes(searchTerm) ||
+                    f.botanical.toLowerCase().includes(searchTerm) ||
+                    f.pedicel.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (sortMode === 'name') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortMode === 'powerType') {
+                filtered.sort((a, b) => a.powerType.localeCompare(b.powerType));
+            } else if (sortMode === 'botanical') {
+                filtered.sort((a, b) => a.botanical.localeCompare(b.botanical));
+            } else if (sortMode === 'user') {
+                filtered.sort((a, b) => a.user.localeCompare(b.user));
+            } else {
+                filtered.sort((a, b) => b.id - a.id);
+            }
+
+            renderFruits(filtered);
+        }
+
+        let currentFruitForModal = null;
+
+        function showFruitModal(fruit) {
+            currentFruitForModal = fruit;
+            const modal = document.getElementById('modal');
+            const header = document.getElementById('modal-header');
+            const body = document.getElementById('modal-body');
+
+            modal.dataset.currentFruitId = fruit.id;
+
+            const powerColor = getPowerColor(fruit.powerType);
+            const iconClass = getFruitIcon(fruit);
+            const isFav = isFavorite(fruit.id);
+
+            header.innerHTML = `
+                <div class="flex items-start gap-x-4">
+                    <div class="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center border-2" 
+                         style="background: ${fruit.color}15; border-color: ${fruit.color}55">
+                        <i class="fa-solid ${iconClass} text-5xl" style="color: ${fruit.color}"></i>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex items-center gap-x-3">
+                            <h2 class="text-3xl font-bold tracking-tight">${fruit.name}</h2>
+                            ${fruit.awakened ? `<span class="px-2.5 py-0.5 text-xs bg-red-600 text-white rounded-xl flex items-center gap-x-1"><i class="fa-solid fa-bolt text-xs"></i> <span class="font-bold">AWAKENED</span></span>` : ''}
+                        </div>
+                        ${fruit.aka ? `<p class="text-zinc-400 text-lg">${fruit.aka}</p>` : ''}
+                        
+                        <div class="flex items-center gap-x-2 mt-3">
+                            <span class="type-badge px-4 py-1 rounded-2xl text-white text-sm" style="background-color: ${powerColor}">
+                                ${fruit.powerType}
+                            </span>
+                            <span class="px-3 py-1 text-xs rounded-2xl bg-zinc-800 border border-zinc-700">
+                                ${fruit.botanical}
+                            </span>
+                            ${fruit.rarity ? `<span class="px-3 py-1 text-xs rounded-2xl ${fruit.rarity === 'Legendary' ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold' : 'bg-zinc-800 border border-zinc-700'}">${fruit.rarity}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            body.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-3 space-y-6">
+                        <div>
+                            <div class="uppercase text-xs tracking-[2px] text-zinc-500 mb-2 flex items-center gap-x-2">
+                                <i class="fa-solid fa-user"></i> 
+                                <span>KNOWN USER</span>
+                            </div>
+                            <div class="font-semibold text-2xl">${fruit.user}</div>
+                        </div>
+                        
+                        <div>
+                            <div class="uppercase text-xs tracking-[2px] text-zinc-500 mb-2">POWER DESCRIPTION</div>
+                            <p class="text-zinc-300 leading-relaxed text-[15px]">${fruit.description}</p>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-zinc-800">
+                            <div class="uppercase text-xs tracking-[2px] text-zinc-500 mb-3">CANON NOTES</div>
+                            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 text-sm">
+                                <p class="text-zinc-300">${fruit.notes}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-2 bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                        <div class="uppercase text-xs tracking-[1.5px] text-red-500 font-semibold mb-5 flex items-center gap-x-2">
+                            <i class="fa-solid fa-leaf"></i>
+                            <span>BOTANICAL ANALYSIS</span>
+                        </div>
+                        
+                        <div class="space-y-5 text-sm">
+                            <div>
+                                <div class="flex justify-between text-xs text-zinc-400 mb-1.5">
+                                    <span>PEDICEL / STEM</span>
+                                </div>
+                                <div class="font-medium leading-snug">${fruit.pedicel}</div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs text-zinc-400 mb-1.5">
+                                    <span>SWIRL PATTERN</span>
+                                </div>
+                                <div class="font-medium">${fruit.swirl}</div>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-zinc-800">
+                                <div class="text-[10px] text-zinc-500 mb-2">THEORY COMPATIBILITY</div>
+                                <div class="flex items-center gap-x-2">
+                                    <div class="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                        <div class="h-1.5 bg-gradient-to-r from-red-500 to-orange-400 rounded-full" style="width: ${Math.floor(Math.random() * 25) + 72}%"></div>
+                                    </div>
+                                    <span class="text-xs font-mono text-emerald-400">${Math.floor(Math.random() * 18) + 82}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-5 border-t border-zinc-800 flex gap-x-2">
+                            <button onclick="addCurrentToCollection()" class="flex-1 py-2.5 text-xs border border-red-600/70 hover:bg-red-950 text-red-400 rounded-2xl flex items-center justify-center gap-x-2 transition-colors">
+                                <i class="fa-solid fa-heart"></i>
+                                <span class="font-medium">COLLECT</span>
+                            </button>
+                            <button onclick="compareWithCurrent()" class="flex-1 py-2.5 text-xs border border-zinc-700 hover:bg-zinc-800 rounded-2xl flex items-center justify-center gap-x-2 transition-colors">
+                                <i class="fa-solid fa-balance-scale"></i>
+                                <span class="font-medium">COMPARE</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            delete modal.dataset.currentFruitId;
+        }
+
+        function compareWithCurrent() {
+            const modal = document.getElementById('modal');
+            const fruitId = parseInt(modal.dataset.currentFruitId);
+            hideModal();
+            enterCompareMode(fruitId);
+        }
+
+        let currentTheoryTab = 0;
+
+        function showTheoryModal() {
+            const modal = document.getElementById('theory-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            switchTheoryTab(0);
+        }
+
+        function hideTheoryModal() {
+            const modal = document.getElementById('theory-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function switchTheoryTab(tabIndex) {
+            document.querySelectorAll('[id^="theory-tab-"]').forEach(el => el.classList.remove('active', 'border-red-600'));
+            document.getElementById(`theory-tab-${tabIndex}`).classList.add('active', 'border-red-600');
+            
+            const content = document.getElementById('theory-content');
+            
+            if (tabIndex === 0) {
+                content.innerHTML = `
+                    <div class="prose prose-invert max-w-none">
+                        <p class="text-lg text-zinc-300">Our theory proposes that Devil Fruits follow a hidden organizational system based on <strong>real botanical features</strong>, not just their powers.</p>
+                        
+                        <div class="my-8 grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-2xl">
+                                <div class="font-semibold text-red-400 mb-2 flex items-center gap-x-2"><i class="fa-solid fa-stem"></i> 1. Pedicel Shape</div>
+                                <div class="text-xs text-zinc-400">T-shaped stems appear on many "simple" fruits, while crowns, drooping leaves, and apple stems mark other groups. This may indicate power origin or evolution path.</div>
+                            </div>
+                            <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-2xl">
+                                <div class="font-semibold text-red-400 mb-2 flex items-center gap-x-2"><i class="fa-solid fa-th"></i> 2. Berry Classification</div>
+                                <div class="text-xs text-zinc-400">Simple berries, aggregate (raspberry-like), multiple fruits (pineapple-like), and pomes may correlate with power complexity and awakening potential.</div>
+                            </div>
+                            <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-2xl">
+                                <div class="font-semibold text-red-400 mb-2 flex items-center gap-x-2"><i class="fa-solid fa-sync"></i> 3. Swirl Pattern</div>
+                                <div class="text-xs text-zinc-400">Tight uniform spirals vs. segmented or absent swirls could indicate control level, fruit "maturity", or even the user's compatibility.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-zinc-950 border-l-4 border-red-600 p-5 text-sm">
+                            <strong class="text-red-400">Key Observation:</strong> Every fruit with a "crown" or "flame-like" pedicel has shown mythical or elemental properties. This is not coincidence.
+                        </div>
+                    </div>
+                `;
+            } else if (tabIndex === 1) {
+                content.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold mb-4 text-lg">Pedicel Types Visualized</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                                <div class="text-sm font-medium mb-3 text-emerald-400">T-SHAPED (Classic)</div>
+                                <div class="pedicel-diagram flex items-center justify-center">
+                                    <div class="relative w-20">
+                                        <div class="h-1 bg-white w-16 mx-auto"></div>
+                                        <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full"></div>
+                                        <div class="absolute top-1 left-1/2 -translate-x-1/2 w-px h-8 bg-white"></div>
+                                        <div class="text-[9px] text-center mt-9 text-zinc-500">Luffy • Alvida • Law • Kizaru</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                                <div class="text-sm font-medium mb-3 text-amber-400">DROOPING / TUFTED</div>
+                                <div class="pedicel-diagram flex items-center justify-center">
+                                    <div class="relative w-20">
+                                        <div class="h-px bg-white w-12 mx-auto"></div>
+                                        <div class="flex justify-center -mt-px">
+                                            <div class="w-px h-3 bg-white"></div>
+                                            <div class="w-px h-5 bg-white mx-1"></div>
+                                            <div class="w-px h-3 bg-white"></div>
+                                        </div>
+                                        <div class="text-[9px] text-center mt-8 text-zinc-500">Buggy • Blackbeard • Crocodile</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                                <div class="text-sm font-medium mb-3 text-purple-400">CROWN / FLAME-LIKE</div>
+                                <div class="pedicel-diagram flex items-center justify-center">
+                                    <div class="relative">
+                                        <div class="w-8 h-8 border-2 border-white rounded-full mx-auto"></div>
+                                        <div class="absolute -inset-2 border border-white/40 rounded-full"></div>
+                                        <div class="absolute -inset-10 border border-white/10 rounded-full"></div>
+                                        <div class="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
+                                <div class="text-sm font-medium mb-3 text-emerald-400">APPLE / POME STEM</div>
+                                <div class="pedicel-diagram flex items-center justify-center">
+                                    <div class="relative w-16">
+                                        <div class="h-2.5 w-2.5 bg-white rounded-full mx-auto mb-1"></div>
+                                        <div class="h-px bg-white w-10 mx-auto"></div>
+                                        <div class="text-[9px] text-center mt-7 text-zinc-500">Momonosuke • Whitebeard • SMILEs</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabIndex === 2) {
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">Berry Classification &amp; Power Correlation</h4>
+                            <div class="text-sm text-zinc-400">Our analysis suggests a strong link between botanical structure and the complexity of Devil Fruit abilities.</div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl">
+                                <div class="w-9 h-9 flex-shrink-0 bg-red-500/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-apple-alt text-red-400"></i></div>
+                                <div class="flex-1 text-sm">
+                                    <div class="font-medium">Simple Berry</div>
+                                    <div class="text-xs text-zinc-400 mt-0.5">Most Logia and basic Paramecia. Clean, direct powers with high control. Examples: Luffy, Law, Kizaru.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl">
+                                <div class="w-9 h-9 flex-shrink-0 bg-amber-500/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-th-large text-amber-400"></i></div>
+                                <div class="flex-1 text-sm">
+                                    <div class="font-medium">Aggregate Berry</div>
+                                    <div class="text-xs text-zinc-400 mt-0.5">Splitting, granular, or multi-part powers. Often Logia with area denial. Examples: Buggy, Blackbeard, Akainu.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl">
+                                <div class="w-9 h-9 flex-shrink-0 bg-purple-500/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-layer-group text-purple-400"></i></div>
+                                <div class="flex-1 text-sm">
+                                    <div class="font-medium">Multiple Fruit</div>
+                                    <div class="text-xs text-zinc-400 mt-0.5">Mythical and spawning powers. High versatility and regeneration. Examples: Marco, Robin.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl">
+                                <div class="w-9 h-9 flex-shrink-0 bg-emerald-500/10 rounded-xl flex items-center justify-center"><i class="fa-solid fa-globe text-emerald-400"></i></div>
+                                <div class="flex-1 text-sm">
+                                    <div class="font-medium">Pome</div>
+                                    <div class="text-xs text-zinc-400 mt-0.5">Artificial or world-altering powers. Often unstable or extremely powerful. Examples: Whitebeard, Momonosuke.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabIndex === 3) {
+                content.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold mb-4">Swirl Pattern Analysis</h4>
+                        
+                        <div class="text-sm text-zinc-400 mb-6">The swirl is the "fingerprint" of the fruit. Tight, uniform spirals suggest high control and compatibility. Segmented or absent swirls indicate wild or artificial origins.</div>
+                        
+                        <div class="grid grid-cols-2 gap-5">
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800">
+                                <div class="uppercase text-xs text-emerald-400 mb-2">TIGHT UNIFORM</div>
+                                <div class="font-medium mb-1">Luffy • Alvida • Law</div>
+                                <div class="text-xs text-zinc-400">High user compatibility. Powers feel "natural" to the user. Easier to awaken.</div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800">
+                                <div class="uppercase text-xs text-amber-400 mb-2">SEGMENTED / BUBBLING</div>
+                                <div class="font-medium mb-1">Akainu • Blackbeard</div>
+                                <div class="text-xs text-zinc-400">Unstable or overwhelming power. Requires strong will to master. Often destructive.</div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800">
+                                <div class="uppercase text-xs text-purple-400 mb-2">CRYSTALLINE / RADIANT</div>
+                                <div class="font-medium mb-1">Aokiji • Kizaru</div>
+                                <div class="text-xs text-zinc-400">Elemental purity. Swirls reflect the element's natural form (snowflake, light burst).</div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800">
+                                <div class="uppercase text-xs text-red-400 mb-2">ABSENT / DOTTED</div>
+                                <div class="font-medium mb-1">SMILEs • Momonosuke</div>
+                                <div class="text-xs text-zinc-400">Artificial fruits. The lack of natural swirls is the clearest sign of human interference.</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function showPedicelVisualizer() {
+            const modal = document.getElementById('modal');
+            const header = document.getElementById('modal-header');
+            const body = document.getElementById('modal-body');
+
+            header.innerHTML = `
+                <div class="flex items-center gap-x-3">
+                    <i class="fa-solid fa-project-diagram text-red-500 text-3xl"></i>
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight">Pedicel Visualizer</h2>
+                        <p class="text-sm text-zinc-400">Interactive 3D-style diagrams of Devil Fruit stems</p>
+                    </div>
+                </div>
+            `;
+
+            body.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-xs uppercase tracking-widest text-emerald-400">T-SHAPED CLASSIC</div>
+                            <div class="font-semibold">Luffy • Law • Kizaru</div>
+                        </div>
+                        <div class="h-48 flex items-center justify-center bg-zinc-900 rounded-xl relative overflow-hidden">
+                            <div class="relative scale-[1.8]">
+                                <div class="w-16 h-[3px] bg-white mx-auto"></div>
+                                <div class="absolute -top-[3px] left-1/2 -translate-x-1/2 w-[9px] h-[9px] bg-white rounded-full"></div>
+                                <div class="absolute top-[3px] left-1/2 -translate-x-1/2 w-[2px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+                                <div class="absolute top-[38px] left-1/2 -translate-x-1/2 w-5 h-px bg-white/60"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-xs uppercase tracking-widest text-amber-400">CROWN / FLAME</div>
+                            <div class="font-semibold">Marco • Robin</div>
+                        </div>
+                        <div class="h-48 flex items-center justify-center bg-zinc-900 rounded-xl relative overflow-hidden">
+                            <div class="relative scale-[1.6]">
+                                <div class="w-8 h-8 border-[2.5px] border-white rounded-full"></div>
+                                <div class="absolute -inset-[5px] border border-white/30 rounded-full"></div>
+                                <div class="absolute -inset-[10px] border border-white/10 rounded-full"></div>
+                                <div class="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center text-xs text-zinc-500">These diagrams are stylized representations based on the Pedicel Theory. Real fruits may vary.</div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        let quizStep = 0;
+        let quizAnswers = [];
+
+        const quizQuestions = [
+            {
+                q: "What's your preferred fighting style?",
+                options: [
+                    { text: "All-out brawler, never back down", value: "brawler" },
+                    { text: "Tactical genius, plan every move", value: "strategist" },
+                    { text: "Speed and precision, hit and run", value: "speedster" },
+                    { text: "Tank everything, unbreakable", value: "tank" }
+                ]
+            },
+            {
+                q: "Which element calls to you most?",
+                options: [
+                    { text: "Fire & Heat", value: "fire" },
+                    { text: "Ice & Cold", value: "ice" },
+                    { text: "Light & Speed", value: "light" },
+                    { text: "Darkness & Void", value: "dark" }
+                ]
+            },
+            {
+                q: "How do you handle problems?",
+                options: [
+                    { text: "Smash through them directly", value: "direct" },
+                    { text: "Outsmart and manipulate", value: "manipulate" },
+                    { text: "Adapt and flow around", value: "adapt" },
+                    { text: "Overwhelm with raw power", value: "overwhelm" }
+                ]
+            },
+            {
+                q: "Your ideal crew role?",
+                options: [
+                    { text: "Captain / Leader", value: "leader" },
+                    { text: "Strategist / Doctor", value: "support" },
+                    { text: "Frontline fighter", value: "fighter" },
+                    { text: "Wild card / Unpredictable", value: "wildcard" }
+                ]
+            },
+            {
+                q: "What's most important to you?",
+                options: [
+                    { text: "Freedom above all", value: "freedom" },
+                    { text: "Protecting loved ones", value: "protect" },
+                    { text: "Knowledge & discovery", value: "knowledge" },
+                    { text: "Absolute power", value: "power" }
+                ]
+            }
+        ];
+
+        function showQuizModal() {
+            const modal = document.getElementById('quiz-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            quizStep = 0;
+            quizAnswers = [];
+            renderQuizStep();
+        }
+
+        function hideQuizModal() {
+            const modal = document.getElementById('quiz-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function renderQuizStep() {
+            const content = document.getElementById('quiz-content');
+            
+            if (quizStep < quizQuestions.length) {
+                const q = quizQuestions[quizStep];
+                
+                content.innerHTML = `
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-zinc-400 mb-1">
+                            <span>QUESTION ${quizStep + 1} OF ${quizQuestions.length}</span>
+                            <span>${Math.round((quizStep / quizQuestions.length) * 100)}%</span>
+                        </div>
+                        <div class="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                            <div class="h-1 bg-red-600 transition-all" style="width: ${(quizStep / quizQuestions.length) * 100}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-xl font-semibold tracking-tight mb-8">${q.q}</div>
+                    
+                    <div class="space-y-3">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="selectQuizAnswer(${i})" 
+                                    class="w-full text-left px-6 py-4 border border-zinc-700 hover:border-red-600 rounded-2xl transition-all flex items-center justify-between group">
+                                <span class="group-hover:text-red-400 transition-colors">${opt.text}</span>
+                                <i class="fa-solid fa-chevron-right text-zinc-600 group-hover:text-red-500 transition-colors"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                showQuizResults(content);
+            }
+        }
+
+        function selectQuizAnswer(optionIndex) {
+            const q = quizQuestions[quizStep];
+            quizAnswers.push(q.options[optionIndex].value);
+            quizStep++;
+            renderQuizStep();
+        }
+
+        function showQuizResults(container) {
+            let bestMatch = null;
+            let bestScore = -1;
+            
+            fruits.forEach(fruit => {
+                let score = 0;
+                const name = fruit.name.toLowerCase();
+                const type = fruit.powerType.toLowerCase();
+                
+                if (quizAnswers.includes('brawler') && (name.includes('gura') || name.includes('magu') || name.includes('yami'))) score += 3;
+                if (quizAnswers.includes('strategist') && (name.includes('ope') || name.includes('hana') || name.includes('yami'))) score += 3;
+                if (quizAnswers.includes('speedster') && (name.includes('pika') || name.includes('nika'))) score += 3;
+                if (quizAnswers.includes('tank') && (name.includes('hie') || name.includes('phoenix'))) score += 3;
+                
+                if (quizAnswers.includes('fire') && (name.includes('mera') || name.includes('magu'))) score += 4;
+                if (quizAnswers.includes('ice') && name.includes('hie')) score += 4;
+                if (quizAnswers.includes('light') && name.includes('pika')) score += 4;
+                if (quizAnswers.includes('dark') && name.includes('yami')) score += 4;
+                
+                if (quizAnswers.includes('freedom') && name.includes('nika')) score += 5;
+                if (quizAnswers.includes('protect') && name.includes('phoenix')) score += 3;
+                if (quizAnswers.includes('knowledge') && name.includes('hana')) score += 3;
+                if (quizAnswers.includes('power') && (name.includes('gura') || name.includes('yami'))) score += 4;
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = fruit;
+                }
+            });
+            
+            if (!bestMatch) bestMatch = fruits[0];
+            
+            const matchPercent = Math.min(98, Math.max(65, bestScore * 7 + 40));
+            
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6" style="background: ${bestMatch.color}22; border: 4px solid ${bestMatch.color}55">
+                        <i class="fa-solid ${getFruitIcon(bestMatch)} text-5xl" style="color: ${bestMatch.color}"></i>
+                    </div>
+                    
+                    <div class="text-sm uppercase tracking-[2px] text-zinc-500">YOUR MATCH</div>
+                    <div class="text-3xl font-bold tracking-tight mt-1 mb-1">${bestMatch.name}</div>
+                    <div class="text-zinc-400">${bestMatch.aka || ''}</div>
+                    
+                    <div class="my-6 flex justify-center">
+                        <div class="px-5 py-1 bg-zinc-800 rounded-2xl text-xs flex items-center gap-x-2">
+                            <span class="text-emerald-400">MATCH</span>
+                            <span class="font-mono text-lg font-bold text-white">${matchPercent}%</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-zinc-400 max-w-[260px] mx-auto leading-relaxed">${bestMatch.description}</p>
+                    
+                    <div class="mt-8 flex gap-x-3 justify-center">
+                        <button onclick="showFruitModalFromQuiz(${bestMatch.id})" class="px-8 py-3 bg-red-600 hover:bg-red-700 rounded-2xl text-sm font-semibold flex items-center gap-x-2 transition-all">
+                            <span>VIEW FULL ENTRY</span>
+                        </button>
+                        <button onclick="hideQuizModal()" class="px-6 py-3 border border-zinc-700 hover:bg-zinc-800 rounded-2xl text-sm">CLOSE</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showFruitModalFromQuiz(fruitId) {
+            hideQuizModal();
+            const fruit = fruits.find(f => f.id === fruitId);
+            if (fruit) {
+                setTimeout(() => showFruitModal(fruit), 350);
+            }
+        }
+
+        let compareMode = false;
+        let compareSelection = [];
+
+        function enterCompareMode(preselectId = null) {
+            compareMode = true;
+            compareSelection = [];
+            
+            if (preselectId) {
+                compareSelection.push(preselectId);
+            }
+            
+            const grid = document.getElementById('fruit-grid');
+            grid.style.outline = '2px solid #c8102e';
+            grid.style.outlineOffset = '4px';
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-24 left-1/2 -translate-x-1/2 bg-zinc-900 border border-red-600 px-6 py-3 rounded-2xl text-sm flex items-center gap-x-3 shadow-xl z-[150]';
+            toast.innerHTML = `
+                <span>Select up to 2 fruits to compare</span>
+                <button onclick="exitCompareMode()" class="px-4 py-1 text-xs border border-red-600 rounded-xl">CANCEL</button>
+            `;
+            document.body.appendChild(toast);
+            
+            document.querySelectorAll('#fruit-grid .devil-fruit-card').forEach(card => {
+                card.onclick = (e) => {
+                    if (!compareMode) return;
+                    e.stopImmediatePropagation();
+                    
+                    const fruitName = card.querySelector('h3').textContent;
+                    const fruit = fruits.find(f => f.name === fruitName);
+                    if (!fruit) return;
+                    
+                    if (compareSelection.includes(fruit.id)) {
+                        compareSelection = compareSelection.filter(id => id !== fruit.id);
+                        card.style.border = '1px solid #3f3f46';
+                    } else if (compareSelection.length < 2) {
+                        compareSelection.push(fruit.id);
+                        card.style.border = '3px solid #c8102e';
+                        card.style.boxShadow = '0 0 0 4px rgba(200, 16, 46, 0.2)';
+                        
+                        if (compareSelection.length === 2) {
+                            setTimeout(() => {
+                                showCompareModal();
+                                exitCompareMode(true);
+                            }, 400);
+                        }
+                    }
+                };
+            });
+            
+            setTimeout(() => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 4500);
+        }
+
+        function exitCompareMode(silent = false) {
+            compareMode = false;
+            compareSelection = [];
+            
+            const grid = document.getElementById('fruit-grid');
+            grid.style.outline = 'none';
+            grid.style.outlineOffset = '0';
+            
+            document.querySelectorAll('#fruit-grid .devil-fruit-card').forEach(card => {
+                const fruitName = card.querySelector('h3').textContent;
+                const fruit = fruits.find(f => f.name === fruitName);
+                if (fruit) {
+                    card.onclick = () => showFruitModal(fruit);
+                    card.style.border = '1px solid #3f3f46';
+                    card.style.boxShadow = '';
+                }
+            });
+            
+            if (!silent) {
+                showToast('Compare mode cancelled');
+            }
+        }
+
+        function showCompareModal() {
+            if (compareSelection.length !== 2) return;
+            
+            const fruit1 = fruits.find(f => f.id === compareSelection[0]);
+            const fruit2 = fruits.find(f => f.id === compareSelection[1]);
+            
+            const modal = document.getElementById('modal');
+            const header = document.getElementById('modal-header');
+            const body = document.getElementById('modal-body');
+            
+            header.innerHTML = `
+                <div class="text-center w-full">
+                    <div class="uppercase text-xs tracking-[2px] text-zinc-500 mb-1">SIDE-BY-SIDE ANALYSIS</div>
+                    <h2 class="text-3xl font-bold tracking-tight">Fruit Comparison</h2>
+                </div>
+            `;
+            
+            const similarity = calculateSimilarity(fruit1, fruit2);
+            
+            body.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                        <div class="flex items-center gap-x-4 mb-6">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: ${fruit1.color}22; border: 3px solid ${fruit1.color}55">
+                                <i class="fa-solid ${getFruitIcon(fruit1)} text-4xl" style="color: ${fruit1.color}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-bold text-xl leading-none">${fruit1.name}</div>
+                                <div class="text-xs text-zinc-400 mt-1">${fruit1.user}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div><span class="text-xs text-zinc-500">TYPE</span><br><span class="font-medium">${fruit1.powerType}</span></div>
+                            <div><span class="text-xs text-zinc-500">BOTANICAL</span><br><span class="font-medium">${fruit1.botanical}</span></div>
+                            <div><span class="text-xs text-zinc-500">PEDICEL</span><br><span class="font-medium text-xs">${fruit1.pedicel}</span></div>
+                            <div><span class="text-xs text-zinc-500">SWIRL</span><br><span class="font-medium text-xs">${fruit1.swirl}</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                        <div class="flex items-center gap-x-4 mb-6">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: ${fruit2.color}22; border: 3px solid ${fruit2.color}55">
+                                <i class="fa-solid ${getFruitIcon(fruit2)} text-4xl" style="color: ${fruit2.color}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-bold text-xl leading-none">${fruit2.name}</div>
+                                <div class="text-xs text-zinc-400 mt-1">${fruit2.user}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div><span class="text-xs text-zinc-500">TYPE</span><br><span class="font-medium">${fruit2.powerType}</span></div>
+                            <div><span class="text-xs text-zinc-500">BOTANICAL</span><br><span class="font-medium">${fruit2.botanical}</span></div>
+                            <div><span class="text-xs text-zinc-500">PEDICEL</span><br><span class="font-medium text-xs">${fruit2.pedicel}</span></div>
+                            <div><span class="text-xs text-zinc-500">SWIRL</span><br><span class="font-medium text-xs">${fruit2.swirl}</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-zinc-950 border border-zinc-800 rounded-3xl p-7 text-center">
+                    <div class="text-xs uppercase tracking-[2px] text-zinc-500">THEORY SIMILARITY</div>
+                    <div class="text-7xl font-bold tracking-tighter my-2" style="color: ${similarity > 70 ? '#22c55e' : similarity > 45 ? '#eab308' : '#f59e0b'}">${similarity}<span class="text-4xl align-super">%</span></div>
+                    <div class="text-sm text-zinc-400">Botanical + Power + Pedicel compatibility</div>
+                    
+                    <div class="mt-6 max-w-xs mx-auto">
+                        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                            <div class="h-2 rounded-full transition-all duration-1000" style="width: ${similarity}%; background: linear-gradient(to right, #c8102e, #22c55e)"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function calculateSimilarity(f1, f2) {
+            let score = 50;
+            
+            if (f1.powerType === f2.powerType) score += 22;
+            if (f1.botanical === f2.botanical) score += 18;
+            if (f1.pedicel.toLowerCase().includes('t-shaped') && f2.pedicel.toLowerCase().includes('t-shaped')) score += 12;
+            if (f1.swirl.toLowerCase().includes('uniform') && f2.swirl.toLowerCase().includes('uniform')) score += 8;
+            
+            if (f1.rarity === f2.rarity && f1.rarity === 'Legendary') score += 10;
+            
+            return Math.min(96, Math.max(28, Math.floor(score)));
+        }
+
+        function showCollectionModal() {
+            const modal = document.getElementById('collection-modal');
+            const grid = document.getElementById('collection-grid');
+            const totalEl = document.getElementById('collection-total');
+            
+            grid.innerHTML = '';
+            totalEl.textContent = favorites.length;
+            
+            if (favorites.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+                        <i class="fa-solid fa-bookmark text-6xl text-zinc-700 mb-6"></i>
+                        <div class="text-xl font-medium text-zinc-400">Your collection is empty</div>
+                        <p class="text-sm text-zinc-500 max-w-[220px] mt-2">Click the heart icon on any fruit card to add it here.</p>
+                    </div>
+                `;
+            } else {
+                favorites.forEach(id => {
+                    const fruit = fruits.find(f => f.id === id);
+                    if (!fruit) return;
+                    
+                    const card = document.createElement('div');
+                    card.className = `bg-zinc-950 border border-zinc-800 rounded-2xl p-4 flex gap-4 cursor-pointer hover:border-red-600/50 transition-all`;
+                    card.onclick = () => {
+                        hideCollectionModal();
+                        setTimeout(() => showFruitModal(fruit), 300);
+                    };
+                    
+                    card.innerHTML = `
+                        <div class="w-14 h-14 flex-shrink-0 rounded-xl flex items-center justify-center" style="background: ${fruit.color}15; border: 2px solid ${fruit.color}44">
+                            <i class="fa-solid ${getFruitIcon(fruit)} text-3xl" style="color: ${fruit.color}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0 pt-1">
+                            <div class="font-semibold text-sm leading-tight line-clamp-2">${fruit.name}</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">${fruit.user}</div>
+                            
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="text-[9px] px-2 py-px rounded bg-zinc-800 text-zinc-400">${fruit.powerType}</span>
+                                <button onclick="event.stopImmediatePropagation(); removeFromCollection(${fruit.id}, this)" class="text-red-400 hover:text-red-500 text-xs px-2 py-1">REMOVE</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function removeFromCollection(fruitId, element) {
+            favorites = favorites.filter(id => id !== fruitId);
+            localStorage.setItem('devilFruitFavorites', JSON.stringify(favorites));
+            updateCollectionCount();
+            
+            const card = element.closest('.bg-zinc-950');
+            card.style.transition = 'all 0.2s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(20px)';
+            
+            setTimeout(() => {
+                card.remove();
+                document.getElementById('collection-total').textContent = favorites.length;
+                
+                if (favorites.length === 0) {
+                    showCollectionModal();
+                }
+            }, 220);
+        }
+
+        function hideCollectionModal() {
+            const modal = document.getElementById('collection-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            filterFruits();
+        }
+
+        function exportCollection() {
+            if (favorites.length === 0) return;
+            
+            const collected = favorites.map(id => fruits.find(f => f.id === id)).filter(Boolean);
+            let text = "MY DEVIL FRUIT COLLECTION\n";
+            text += "Generated from ONE PIECE Devil Fruit Encyclopedia v2.0\n\n";
+            
+            collected.forEach((fruit, i) => {
+                text += `${i + 1}. ${fruit.name} (${fruit.aka || ''})\n`;
+                text += `   User: ${fruit.user} | Type: ${fruit.powerType}\n`;
+                text += `   Botanical: ${fruit.botanical}\n\n`;
+            });
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my_devil_fruit_collection.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Collection exported successfully!');
+        }
+
+        function clearCollection() {
+            if (!confirm('Clear your entire collection?')) return;
+            
+            favorites = [];
+            localStorage.setItem('devilFruitFavorites', JSON.stringify(favorites));
+            updateCollectionCount();
+            showCollectionModal();
+        }
+
+        function showRandomFruit() {
+            const randomIndex = Math.floor(Math.random() * fruits.length);
+            const randomFruit = fruits[randomIndex];
+            
+            const grid = document.getElementById('fruit-grid');
+            grid.style.transition = 'filter 0.1s ease';
+            grid.style.filter = 'brightness(1.3) saturate(1.4)';
+            
+            setTimeout(() => {
+                grid.style.filter = 'none';
+                showFruitModal(randomFruit);
+            }, 180);
+        }
+
+        function animateStats() {
+            const fruitsEl = document.getElementById('stat-fruits');
+            const logiaEl = document.getElementById('stat-logia');
+            const zoanEl = document.getElementById('stat-zoan');
+            const parameciaEl = document.getElementById('stat-paramecia');
+            
+            function countUp(el, target, duration = 1400) {
+                let start = 0;
+                const increment = target / (duration / 16);
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= target) {
+                        start = target;
+                        clearInterval(timer);
+                    }
+                    el.textContent = Math.floor(start);
+                }, 16);
+            }
+            
+            setTimeout(() => countUp(fruitsEl, 15), 300);
+            setTimeout(() => countUp(logiaEl, 6), 450);
+            setTimeout(() => countUp(zoanEl, 2), 600);
+            setTimeout(() => countUp(parameciaEl, 6), 750);
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                }
+                
+                if (e.key.toLowerCase() === 'r' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    showRandomFruit();
+                }
+                
+                if (e.key === 'Escape') {
+                    const modals = document.querySelectorAll('.fixed.inset-0:not(.hidden)');
+                    if (modals.length > 0) {
+                        modals[modals.length - 1].classList.add('hidden');
+                        modals[modals.length - 1].classList.remove('flex');
+                    } else if (compareMode) {
+                        exitCompareMode();
+                    }
+                }
+                
+                if (e.key.toLowerCase() === 'c' && (e.metaKey || e.ctrlKey) && !compareMode) {
+                    e.preventDefault();
+                    enterCompareMode();
+                }
+            });
+            
+            const search = document.getElementById('search-input');
+            search.placeholder = "Search fruits, users, powers... (Press / to focus)";
+        }
+
+        function init() {
+            initializeTailwind();
+            
+            renderFruits();
+            
+            document.getElementById('filter-all').classList.add('filter-active', 'bg-red-600', 'text-white');
+            
+            updateCollectionCount();
+            
+            animateStats();
+            
+            setupKeyboardShortcuts();
+            
+            console.log('%c[Devil Fruit Encyclopedia v2.0] Ready. Type showRandomFruit() in console for fun.', 'color:#666');
+            window.showRandomFruit = showRandomFruit;
+            
+            let konami = '';
+            const konamiCode = 'ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba';
+            document.addEventListener('keydown', function(e) {
+                konami += e.key;
+                if (konami.length > konamiCode.length) konami = konami.slice(1);
+                if (konami === konamiCode) {
+                    konami = '';
+                    launchConfetti();
+                    setTimeout(() => {
+                        const legendaries = fruits.filter(f => f.rarity === 'Legendary');
+                        legendaries.forEach((f, i) => setTimeout(() => showFruitModal(f), i * 800));
+                    }, 600);
+                }
+            });
+            
+            setTimeout(() => {
+                const filterBar = document.querySelector('.sticky.top-\\[73px\\]');
+                if (filterBar) {
+                    filterBar.style.transition = 'box-shadow 0.4s ease';
+                    filterBar.style.boxShadow = '0 0 0 3px rgba(200, 16, 46, 0.15)';
+                    setTimeout(() => {
+                        filterBar.style.boxShadow = 'none';
+                    }, 1800);
+                }
+            }, 2200);
+            
+            console.log('%c[ONE PIECE] Devil Fruit Encyclopedia v2.0 initialized successfully. The Pedicel Theory awaits...', 'color:#c8102e; font-size:9px');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
